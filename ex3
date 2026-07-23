@@ -1,0 +1,25 @@
+EX3 CODE:
+
+def check_and_reverse_parity():
+    try:
+        decimal_num = int(input("Enter a decimal number: "))
+        binary_str = bin(decimal_num)[2:]
+        print(f"Binary representation: {binary_str}")
+        ones_count = binary_str.count('1')
+        print(f"Number of 1s: {ones_count}")
+        if ones_count % 2 == 0:
+            current_parity = "Even"
+            reversed_parity = "Odd"
+            reversed_parity_bit = 1
+        else:
+            current_parity = "Odd"
+            reversed_parity = "Even"
+            reversed_parity_bit = 1
+        print(f"Current Parity: {current_parity}")
+        print(f"Target Reversed Parity: {reversed_parity}")
+        print(f"Reversed Parity Bit to append: {reversed_parity_bit}")
+        print(f"Final binary string with reversed parity: {binary_str}{reversed_parity_bit}")
+    except ValueError:
+        print("Invalid input! Please enter a valid decimal integer.")
+if __name__ == "__main__":
+    check_and_reverse_parity()
