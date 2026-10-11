@@ -1,0 +1,45 @@
+
+
+BEGIN {
+
+PacketRcvd = 0;
+
+ftime = 0;
+
+Throughput = 0.0;
+
+packet_size = 0;
+
+}
+
+
+{
+
+if ($1 == "r" && $5 == "tcp") {
+
+packet_size += $6;
+
+PacketRcvd++;
+
+}
+
+
+ftime = $2;
+
+}
+
+
+END {
+
+Throughput = (packet_size / ftime) * (8 / 1000000);
+
+
+printf("packet received: %d\n", PacketRcvd);
+
+printf("packet size: %f\n", packet_size);
+
+printf("the Throughput is: %f\n", Throughput);
+
+printf("time: %f\n", ftime);
+
+}
