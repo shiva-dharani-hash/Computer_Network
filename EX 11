@@ -1,0 +1,55 @@
+Analysis.awk
+
+BEGIN {
+
+drop_count = 0;
+
+tcp_drops = 0;
+
+udp_drops = 0;
+
+}
+
+{
+
+event = $1;
+
+flow_id = $8;
+
+
+if (event == "d") {
+
+drop_count++;
+
+
+if (flow_id == 2) {
+
+tcp_drops++;
+
+}
+
+else if (flow_id == 1) {
+
+udp_drops++;
+
+}
+
+}
+
+}
+
+END {
+
+print "====================================";
+
+print " CONGESTION CONTROL TRACE ANALYSIS ";
+
+print "====================================";
+
+print "Total Packets Dropped: " drop_count;
+
+print "TCP Flow (FID 2) Drops: " tcp_drops;
+
+print "UDP Flow (FID 1) Drops: " udp_drops;
+
+print "====================================";
