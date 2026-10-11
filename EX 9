@@ -1,0 +1,123 @@
+import socket 
+
+dns_table = { 
+
+    "google.com": "142.250.183.14", 
+
+    "example.com": "93.184.216.34", 
+
+    "openai.com": "104.18.33.45", 
+
+    "yahoo.com": "98.137.11.163"} 
+
+reverse_dns = {ip: domain for domain, ip in dns_table.items()} 
+
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+
+host = "127.0.0.1" 
+
+port = 5000 
+
+server_socket.bind((host, port)) 
+
+print("DNS Server started...") 
+
+print(f"Listening on {host}:{port}") 
+
+while True: 
+
+    data, client_address = server_socket.recvfrom(1024) 
+
+    request = data.decode().strip() 
+
+    parts = request.split(" ", 1) 
+
+    if len(parts) != 2: 
+
+        response = "Invalid request" 
+
+    else: 
+
+        lookup_type, query = parts 
+
+        lookup_type = lookup_type.upper() 
+
+        if lookup_type == "FORWARD" 
+
+            response = dns_table.get(query, "Domain not found" 
+
+        elif lookup_type == "REVERSE" 
+
+            response = reverse_dns.get(query, "IP address not found") 
+
+        else: 
+
+            response = "Invalid lookup type" 
+
+    server_socket.sendto(response.encode(), client_address) 
+
+Dns_client.py 
+
+import socket 
+
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+
+server_address = ("127.0.0.1", 5000) 
+
+print("DNS Client") 
+
+while True: 
+
+    print("\n1. Forward Lookup (Domain -> IP)") 
+
+    print("2. Reverse Lookup (IP -> Domain)") 
+
+    print("3. Exit") 
+
+    choice = input("Enter your choice: ") 
+
+    if choice == "1": 
+
+        domain = input("Enter domain name: ") 
+
+        message = "FORWARD " + domain 
+
+        client_socket.sendto(message.encode(), server_address) 
+
+        data, _ = client_socket.recvfrom(1024) 
+
+        print("IP Address:", data.decode()) 
+
+    elif choice == "2": 
+
+        ip = input("Enter IP address: ") 
+
+        message = "REVERSE " + ip 
+
+        client_socket.sendto(message.encode(), server_address) 
+
+        data, _ = client_socket.recvfrom(1024) 
+
+        print("Domain Name:", data.decode()) 
+
+    elif choice == "3": 
+
+        print("Client terminated.") 
+
+        break 
+
+    else: 
+
+        print("Invalid choice!") 
+
+clien () t_socket.close 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
