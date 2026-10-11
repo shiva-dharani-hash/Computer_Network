@@ -1,0 +1,67 @@
+ex7_server.py
+
+
+import socket
+
+from urllib.request import urlopen
+
+from bs4 import BeautifulSoup
+
+import webbrowser
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+s.bind(("localhost", 7000))
+
+s.listen(5)
+
+print("Waiting for Connection...")
+
+c, addr = s.accept()
+
+print("Got Connection from", addr)
+
+data = c.recv(4096).decode()
+
+msg, url = data.split("\n", 1)
+
+print("Message:", msg)
+
+print("Received URL:", url)
+
+html = urlopen(url)
+
+soup = BeautifulSoup(html, "html.parser")
+
+with open("download.html", "w", encoding="utf-8") as f:
+
+f.write(soup.prettify())
+
+print("Web page downloaded successfully!")
+
+webbrowser.open("download.html")
+
+c.close()
+
+s.close()
+
+
+
+ex7_client.py
+
+
+import socket
+
+c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+c.connect(("localhost", 7000))
+
+msg = input("Enter message: ")
+
+url = input("Enter URL: ")
+
+data = msg + "\n" + url
+
+c.send(data.encode())
+
+c.close()
