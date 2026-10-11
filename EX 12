@@ -1,0 +1,130 @@
+BEGIN {
+
+tcp_sent = 0
+
+udp_sent = 0
+
+tcp_received = 0
+
+udp_received = 0
+
+tcp_dropped = 0
+
+udp_dropped = 0
+
+tcp_bytes = 0
+
+udp_bytes = 0
+
+tcp_start_time = -1
+
+tcp_end_time = 0
+
+udp_start_time = 0.1
+
+udp_end_time = 9.5
+
+}{
+
+action = $1
+
+time = $2
+
+node1 = $3
+
+node2 = $4
+
+size = $6
+
+flow_id = $8
+
+if (flow_id == 2 && action == "+" && node1 == 0) {
+
+tcp_sent++
+
+if (tcp_start_time == -1) {
+
+tcp_start_time = time
+
+}}
+
+if (flow_id == 1 && action == "+" && node1 == 1) {
+
+udp_sent++
+
+}
+
+if (flow_id == 2 && action == "r" && node2 == 4) {
+
+tcp_received++
+
+tcp_bytes += size
+
+
+if (time > tcp_end_time) {
+
+tcp_end_time = time
+
+}}
+
+if (flow_id == 1 && action == "r" && node2 == 5) {
+
+udp_received++
+
+udp_bytes += size
+
+}
+
+if (action == "d") {
+
+if (flow_id == 2) {
+
+tcp_dropped++
+
+}
+
+if (flow_id == 1) {
+
+udp_dropped++
+
+} }}
+
+END {
+
+tcp_transfer_time = tcp_end_time - tcp_start_time
+
+udp_duration = udp_end_time - udp_start_time
+
+if (tcp_transfer_time > 0) {
+
+tcp_throughput = (tcp_bytes * 8) / (tcp_transfer_time * 1000000)
+
+} else {
+
+tcp_throughput = 0}
+
+udp_throughput = (udp_bytes * 8) / (udp_duration * 1000000)
+
+print "=================================================="
+
+print "TCP vs UDP PERFORMANCE EVALUATION METRICS"
+
+print "=================================================="
+
+print "Metric | TCP (FTP) | UDP (CBR)"
+
+print "--------------------------------------------------"
+
+print "Packets Sent | " tcp_sent " | " udp_sent
+
+print "Packets Received | " tcp_received " | " udp_received
+
+print "Packets Dropped | " tcp_dropped " | " udp_dropped
+
+print "File Transfer Time (s) | " sprintf("%.3f", tcp_transfer_time) " | " sprintf("%.3f", udp_duration)
+
+print "Throughput (Mbps) | " sprintf("%.3f", tcp_throughput) " | " sprintf("%.3f", udp_throughput)
+
+print "=================================================="
+
+}
