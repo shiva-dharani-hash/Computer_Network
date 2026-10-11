@@ -1,0 +1,76 @@
+
+
+
+import ipaddress
+
+import math
+
+def get_class(ip):
+
+ip_int = int(ipaddress.IPv4Address(ip))
+
+if 0 <= ip_int <= 0x7F_FF_FF_FF:
+
+return 'Class A', '255.0.0.0'
+
+elif 0x80_00_00_00 <= ip_int <= 0xBF_FF_FF_FF:
+
+return 'Class B', '255.255.0.0'
+
+elif 0xC0_00_00_00 <= ip_int <= 0xDF_FF_FF_FF:
+
+return 'Class C', '255.255.255.0'
+
+elif 0xE0_00_00_00 <= ip_int <= 0xEF_FF_FF_FF:
+
+return 'Class D', 'Multicasting address'
+
+elif 0xF0_00_00_00 <= ip_int <= 0xFF_FF_FF_FF:
+
+return 'Class E', 'Experimental address'
+
+else:
+
+return 'Unknown Class', None
+
+def calculate_new_subnet_mask(default_mask, no_of_subnets):
+
+mask_bits = sum([bin(int(x)).count('1') for x in default_mask.split('.')])
+
+subnet_bits = math.ceil(math.log2(no_of_subnets))
+
+new_mask_bits = mask_bits + subnet_bits
+
+new_mask_binary = (0xFFFFFFFF >> (32 - new_mask_bits)) << (32 - new_mask_bits)
+
+new_mask = ipaddress.IPv4Address(new_mask_binary)
+
+return str(new_mask)
+
+def main():
+
+ip = input("Enter IP Address : ")
+
+ip_class, default_mask = get_class(ip)
+
+if ip_class in ['Class D', 'Class E']:
+
+print(f"Type OF Class: {ip_class}")
+
+print(f"Default Subnet Mask : {default_mask}")
+
+else:
+
+print(f"Type OF Class: {ip_class}")
+
+print(f"Default Subnet Mask : {default_mask}")
+
+no_of_subnets = int(input("Enter the no of subnet: "))
+
+new_subnet_mask = calculate_new_subnet_mask(default_mask, no_of_subnets)
+
+print(f"New Subnet Mask : {new_subnet_mask}")
+
+if __name__ == "__main__":
+
+main()
