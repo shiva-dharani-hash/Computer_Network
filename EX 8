@@ -1,0 +1,87 @@
+EX_SERVER_chat 
+
+import socket 
+
+ server = socket.socket() 
+
+server.bind(("localhost", 9004)) 
+
+server.listen(1) 
+
+print("Waiting for client connection...") 
+
+client, addr = server.accept() 
+
+print("Connected to:", addr) 
+
+client.send("Connected successfully".encode()) 
+
+ while True: 
+
+    msg = client.recv(1024).decode() 
+
+    if msg == "break": 
+
+        client.send("break".encode()) 
+
+        print (" Connection Disconnected") 
+
+        break 
+
+     print("Client:", msg) 
+
+     reply = input("Server: ") 
+
+    client.send(reply.encode()) 
+
+client.close() 
+
+server.close() 
+
+ 
+
+EX_CLIENT_chat 
+
+import socket 
+
+client = socket.socket() 
+
+client.connect(("localhost", 9004)) 
+
+print(client.recv(1024).decode()) 
+
+ while True: 
+
+    msg = input("Client: ") 
+
+    client.send(msg.encode()) 
+
+    if msg == "break": 
+
+        print (" Connection Disconnected") 
+
+          break 
+
+    reply = client.recv(1024).decode() 
+
+     if reply == "break": 
+
+        print (" Connection Disconnected") 
+
+        break 
+
+    print("Server:", reply) 
+
+client.close() 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
